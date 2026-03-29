@@ -2,146 +2,134 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Game Entry</title>
     <style>
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            width: 100%;
             background-color: white;
-            color: #000;
+            font-family: sans-serif;
+            overflow: hidden; /* Strictly no scrolling */
         }
 
-        /* Base screen style */
         .screen {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            display: none; 
-            z-index: 10;
-            background: white;
-        }
-
-        /* Centering for Image Screens */
-        .flex-center {
+            width: 100vw;
+            height: 100vh;
             display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
+            cursor: pointer;
         }
 
-        /* SCROLLABLE DISCLAIMER FIX */
-        #screen2 {
-            overflow-y: auto; /* Allows scrolling on rotate */
-            display: none;
-            padding: 20px 10px;
-            box-sizing: border-box;
-        }
-
-        .warning-content {
-            max-width: 600px;
-            margin: 20px auto; /* Centers the box with space top/bottom */
-            border: 2px solid #000;
-            padding: 20px;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            background: white;
-            text-align: center;
-        }
-
-        h2 { color: #d00; margin-top: 0; font-size: 1.2rem; }
-
-        /* Images */
+        /* Screen 1: Intro Logo */
         #screen1 img {
-            max-width: 80%;
+            max-width: 70%;
             max-height: 70%;
             object-fit: contain;
         }
 
-        .full-cover-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
+        /* Screen 2: Disclaimer - Scaling to fit height */
+        #screen2 {
+            background: white;
+            padding: 2vh 5vw;
+            box-sizing: border-box;
+        }
+
+        .warning-box {
+            border: 2px solid black;
+            padding: 1.5vh 2vw;
+            max-width: 900px;
+            /* This makes the box scale with the screen height */
+            height: auto;
+            max-height: 90vh; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .warning-box h2 {
+            color: red;
+            margin: 0 0 1vh 0;
+            font-size: clamp(14px, 4vh, 24px); /* Scales between 14px and 24px based on height */
+        }
+
+        .warning-box p {
+            margin: 0.5vh 0;
+            line-height: 1.2;
+            /* Highly responsive text size */
+            font-size: clamp(10px, 2.8vh, 16px); 
+        }
+
+        /* Screen 3: Full Screen Cover - No Blanks */
+        #screen3 {
+            background-image: url('IMG_1259.png');
+            background-size: cover;    /* Fills screen completely */
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         .footer-text {
             position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.8rem;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            bottom: 5vh;
+            width: 100%;
+            color: white;
+            text-shadow: 2px 2px 5px black;
+            font-size: 3vh;
             text-transform: uppercase;
-            z-index: 2;
-            white-space: nowrap;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <div id="screen1" class="screen flex-center" style="display: flex;" onclick="nextScreen(2)">
-        <img src="IMG_8737.jpeg" alt="Intro Logo">
+    <div id="screen1" class="screen" style="display: flex;" onclick="nextScreen(2)">
+        <img src="IMG_8737.jpeg" alt="Logo">
     </div>
 
     <div id="screen2" class="screen" onclick="nextScreen(3)">
-        <div class="warning-content">
+        <div class="warning-box">
             <h2>Important Legal Disclaimer and Warning</h2>
             <p><strong>This game is created strictly as a parody and satire.</strong></p>
             <p>I do not like Epstein games and do not support, promote, glorify, or endorse Jeffrey Epstein, his actions, or any related content in any way. Jeffrey Epstein’s crimes were serious, harmful, and wrong. The sole purpose of this game is to mock and criticize through dark humor.</p>
-            <p>This game is intended for adults only. You must be 18 years of age or older to access or play. Minors are strictly prohibited.</p>
-            <p>All characters, events, and situations are fictionalized for satirical purposes only. Any resemblance to real persons or events is coincidental and not intended to be taken literally.</p>
-            <p>Players access and play this game entirely at their own risk. The creator is not responsible for any offense, emotional distress, or other consequences that may arise from playing.</p>
-            <p>This content is protected parody and constitutes expressive speech. It does not constitute endorsement of any illegal or harmful behavior.</p>
-            <p style="font-size: 0.7rem; color: #888;">(Tap anywhere to skip)</p>
+            <p>This game is intended for adults only. You must be 18+ to access. Minors are strictly prohibited.</p>
+            <p>All characters and events are fictionalized for satirical purposes. Any resemblance to real persons is coincidental.</p>
+            <p>Players access at their own risk. The creator is not responsible for any offense or emotional distress.</p>
+            <p>This content is protected parody and constitutes expressive speech.</p>
         </div>
     </div>
 
-    <div id="screen3" class="screen flex-center" onclick="goToGame()">
-        <img src="IMG_1259.png" class="full-cover-img" alt="Background">
-        <p class="footer-text">Click to enter the game...</p>
+    <div id="screen3" class="screen" onclick="goToGame()">
+        <div class="footer-text">CLICK TO ENTER THE GAME...</div>
     </div>
 
     <script>
         let currentScreen = 1;
 
         function nextScreen(num) {
-            // Hide all screens
-            document.querySelectorAll('.screen').forEach(s => {
-                s.style.display = 'none';
-            });
-            
+            document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
             const target = document.getElementById('screen' + num);
             if (target) {
-                // Show as Flex for images, Block for disclaimer
-                target.style.display = (num === 2) ? 'block' : 'flex';
+                target.style.display = 'flex';
                 currentScreen = num;
-
                 if (num === 2) {
-                    setTimeout(() => {
-                        if(currentScreen === 2) nextScreen(3);
-                    }, 1500);
+                    setTimeout(() => { if(currentScreen === 2) nextScreen(3); }, 1500);
                 }
             }
         }
 
         function goToGame() {
-            window.location.href = 'main_game.html'; 
+            window.location.href = 'game.html'; 
         }
 
-        setTimeout(() => {
-            if(currentScreen === 1) nextScreen(2);
-        }, 1500);
+        setTimeout(() => { if(currentScreen === 1) nextScreen(2); }, 1500);
     </script>
-
 </body>
 </html>
