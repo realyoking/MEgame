@@ -13,9 +13,6 @@
             background-color: white;
             color: #000;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         .screen {
@@ -24,7 +21,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            display: none; /* Hidden by default */
+            display: none; 
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -35,42 +32,58 @@
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Screen 1 & 3: Image Styles */
-        .display-img {
+        /* Screen 1: Centered Logo */
+        #screen1 img {
             max-width: 80%;
             max-height: 70%;
             object-fit: contain;
         }
 
-        /* Screen 2: Warning Styles */
-        #warning-screen {
-            padding: 20px;
-            background: #fff;
-        }
+        /* Screen 2: Warning Box */
         .warning-content {
             max-width: 700px;
             border: 2px solid #000;
             padding: 25px;
             font-size: 0.9rem;
             line-height: 1.5;
+            background: white;
         }
         h2 { color: #d00; margin-top: 0; }
 
-        /* Click to Enter Text */
+        /* Screen 3: Full Screen Cover Image */
+        #screen3 {
+            background-color: #000;
+        }
+        .full-cover-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* This makes it fill the whole screen */
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* Click to Enter Text (Overlayed on the cover image) */
         .footer-text {
             position: absolute;
-            bottom: 30px;
-            font-size: 0.8rem;
-            color: #666;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1rem;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8); /* Makes text readable over image */
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            z-index: 2;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
 
     <div id="screen1" class="screen" style="display: flex;" onclick="nextScreen(2)">
-        <img src="IMG_8737.jpeg" class="display-img" alt="Intro Logo">
+        <img src="IMG_8737.jpeg" alt="Intro Logo">
     </div>
 
     <div id="screen2" class="screen" onclick="nextScreen(3)">
@@ -86,7 +99,7 @@
     </div>
 
     <div id="screen3" class="screen" onclick="goToGame()">
-        <img src="IMG_1259.png" class="display-img" alt="Menu">
+        <img src="IMG_1259.png" class="full-cover-img" alt="Background">
         <p class="footer-text">Click to enter the game...</p>
     </div>
 
@@ -94,16 +107,13 @@
         let currentScreen = 1;
 
         function nextScreen(num) {
-            // Hide all
             document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
-            
-            // Show target
             const target = document.getElementById('screen' + num);
             if (target) {
                 target.style.display = 'flex';
                 currentScreen = num;
 
-                // If we are on the warning screen (2), start the auto-timer for the menu (3)
+                // Auto-timer for Screen 2 (Warning) to Screen 3 (Menu)
                 if (num === 2) {
                     setTimeout(() => {
                         if(currentScreen === 2) nextScreen(3);
@@ -113,11 +123,11 @@
         }
 
         function goToGame() {
-            // Change 'game.html' to whatever your next file name is
-            window.location.href = 'game.html';
+            // This is the file it will go to when you click the last image
+            window.location.href = 'main_game.html'; 
         }
 
-        // Auto-transition Screen 1 to Screen 2 after 1.5s
+        // Auto-timer for Screen 1 (Intro) to Screen 2 (Warning)
         setTimeout(() => {
             if(currentScreen === 1) nextScreen(2);
         }, 1500);
