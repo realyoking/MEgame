@@ -12,9 +12,9 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: white;
             color: #000;
-            overflow: hidden;
         }
 
+        /* Base screen style */
         .screen {
             position: fixed;
             top: 0;
@@ -22,83 +22,91 @@
             width: 100%;
             height: 100%;
             display: none; 
+            z-index: 10;
+            background: white;
+        }
+
+        /* Centering for Image Screens */
+        .flex-center {
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            cursor: pointer;
-            animation: fadeIn 0.4s ease-in;
         }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* SCROLLABLE DISCLAIMER FIX */
+        #screen2 {
+            overflow-y: auto; /* Allows scrolling on rotate */
+            display: none;
+            padding: 20px 10px;
+            box-sizing: border-box;
+        }
 
-        /* Screen 1: Centered Logo */
+        .warning-content {
+            max-width: 600px;
+            margin: 20px auto; /* Centers the box with space top/bottom */
+            border: 2px solid #000;
+            padding: 20px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            background: white;
+            text-align: center;
+        }
+
+        h2 { color: #d00; margin-top: 0; font-size: 1.2rem; }
+
+        /* Images */
         #screen1 img {
             max-width: 80%;
             max-height: 70%;
             object-fit: contain;
         }
 
-        /* Screen 2: Warning Box */
-        .warning-content {
-            max-width: 700px;
-            border: 2px solid #000;
-            padding: 25px;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            background: white;
-        }
-        h2 { color: #d00; margin-top: 0; }
-
-        /* Screen 3: Full Screen Cover Image */
-        #screen3 {
-            background-color: #000;
-        }
         .full-cover-img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* This makes it fill the whole screen */
+            object-fit: cover;
             position: absolute;
             top: 0;
             left: 0;
             z-index: 1;
         }
 
-        /* Click to Enter Text (Overlayed on the cover image) */
         .footer-text {
             position: absolute;
-            bottom: 40px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 1rem;
+            font-size: 0.8rem;
             color: #fff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8); /* Makes text readable over image */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
             text-transform: uppercase;
-            letter-spacing: 2px;
             z-index: 2;
-            pointer-events: none;
+            white-space: nowrap;
         }
     </style>
 </head>
 <body>
 
-    <div id="screen1" class="screen" style="display: flex;" onclick="nextScreen(2)">
+    <div id="screen1" class="screen flex-center" style="display: flex;" onclick="nextScreen(2)">
         <img src="IMG_8737.jpeg" alt="Intro Logo">
     </div>
 
     <div id="screen2" class="screen" onclick="nextScreen(3)">
         <div class="warning-content">
             <h2>Important Legal Disclaimer and Warning</h2>
-            <p>This game is created strictly as a parody and satire.</p>
+            <p><strong>This game is created strictly as a parody and satire.</strong></p>
             <p>I do not like Epstein games and do not support, promote, glorify, or endorse Jeffrey Epstein, his actions, or any related content in any way. Jeffrey Epstein’s crimes were serious, harmful, and wrong. The sole purpose of this game is to mock and criticize through dark humor.</p>
             <p>This game is intended for adults only. You must be 18 years of age or older to access or play. Minors are strictly prohibited.</p>
             <p>All characters, events, and situations are fictionalized for satirical purposes only. Any resemblance to real persons or events is coincidental and not intended to be taken literally.</p>
             <p>Players access and play this game entirely at their own risk. The creator is not responsible for any offense, emotional distress, or other consequences that may arise from playing.</p>
-            <p>This content is protected parody and constitutes expressive speech.</p>
+            <p>This content is protected parody and constitutes expressive speech. It does not constitute endorsement of any illegal or harmful behavior.</p>
+            <p style="font-size: 0.7rem; color: #888;">(Tap anywhere to skip)</p>
         </div>
     </div>
 
-    <div id="screen3" class="screen" onclick="goToGame()">
+    <div id="screen3" class="screen flex-center" onclick="goToGame()">
         <img src="IMG_1259.png" class="full-cover-img" alt="Background">
         <p class="footer-text">Click to enter the game...</p>
     </div>
@@ -107,30 +115,32 @@
         let currentScreen = 1;
 
         function nextScreen(num) {
-            document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(s => {
+                s.style.display = 'none';
+            });
+            
             const target = document.getElementById('screen' + num);
             if (target) {
-                target.style.display = 'flex';
+                // Show as Flex for images, Block for disclaimer
+                target.style.display = (num === 2) ? 'block' : 'flex';
                 currentScreen = num;
 
-                // Auto-timer for Screen 2 (Warning) to Screen 3 (Menu)
                 if (num === 2) {
                     setTimeout(() => {
                         if(currentScreen === 2) nextScreen(3);
-                    }, 2000);
+                    }, 1500);
                 }
             }
         }
 
         function goToGame() {
-            // This is the file it will go to when you click the last image
             window.location.href = 'main_game.html'; 
         }
 
-        // Auto-timer for Screen 1 (Intro) to Screen 2 (Warning)
         setTimeout(() => {
             if(currentScreen === 1) nextScreen(2);
-        }, 2000);
+        }, 1500);
     </script>
 
 </body>
