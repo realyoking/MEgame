@@ -12,7 +12,8 @@
             width: 100%;
             background-color: white;
             font-family: sans-serif;
-            overflow: hidden; /* Strictly no scrolling */
+            overflow: hidden;
+            user-select: none;
         }
 
         .screen {
@@ -26,56 +27,32 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            cursor: pointer;
         }
 
         /* Screen 1: Intro Logo */
-        #screen1 img {
-            max-width: 70%;
-            max-height: 70%;
-            object-fit: contain;
-        }
+        #screen1 img { max-width: 70%; max-height: 70%; object-fit: contain; }
 
-        /* Screen 2: Disclaimer - Scaling to fit height */
-        #screen2 {
-            background: white;
-            padding: 2vh 5vw;
-            box-sizing: border-box;
-        }
-
+        /* Screen 2: Disclaimer */
+        #screen2 { background: white; padding: 2vh 5vw; box-sizing: border-box; }
         .warning-box {
             border: 2px solid black;
             padding: 1.5vh 2vw;
             max-width: 900px;
-            /* This makes the box scale with the screen height */
-            height: auto;
             max-height: 90vh; 
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
+        .warning-box h2 { color: red; margin: 0 0 1vh 0; font-size: clamp(14px, 4vh, 24px); }
+        .warning-box p { margin: 0.5vh 0; line-height: 1.2; font-size: clamp(10px, 2.8vh, 16px); }
 
-        .warning-box h2 {
-            color: red;
-            margin: 0 0 1vh 0;
-            font-size: clamp(14px, 4vh, 24px); /* Scales between 14px and 24px based on height */
-        }
-
-        .warning-box p {
-            margin: 0.5vh 0;
-            line-height: 1.2;
-            /* Highly responsive text size */
-            font-size: clamp(10px, 2.8vh, 16px); 
-        }
-
-        /* Screen 3: Full Screen Cover - No Blanks */
+        /* Screen 3: Cover */
         #screen3 {
             background-image: url('IMG_1259.png');
-            background-size: cover;    /* Fills screen completely */
+            background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
+            cursor: pointer;
         }
-
         .footer-text {
             position: absolute;
             bottom: 5vh;
@@ -85,6 +62,72 @@
             font-size: 3vh;
             text-transform: uppercase;
             font-weight: bold;
+        }
+
+        /* Screen 4: Game Home Screen */
+        #screen4 {
+            background-image: url('HOMESCREEN_BG.png'); /* Change this in GitHub */
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* UI Elements */
+        .top-bar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.6);
+            padding: 10px 20px;
+            border-radius: 50px;
+            color: gold;
+            font-weight: bold;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            border: 2px solid gold;
+        }
+
+        .menu-buttons {
+            position: absolute;
+            right: 30px;
+            bottom: 10%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .btn {
+            background: #ffcc00;
+            border: 4px solid #333;
+            padding: 15px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: transform 0.1s;
+            box-shadow: 0 5px 0 #997a00;
+        }
+
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #997a00;
+        }
+
+        /* Character Notification Popup */
+        #char-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 5px solid gold;
+            padding: 20px;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            border-radius: 20px;
         }
     </style>
 </head>
@@ -98,20 +141,52 @@
         <div class="warning-box">
             <h2>Important Legal Disclaimer and Warning</h2>
             <p><strong>This game is created strictly as a parody and satire.</strong></p>
-            <p>I do not like Epstein games and do not support, promote, glorify, or endorse Jeffrey Epstein, his actions, or any related content in any way. Jeffrey Epstein’s crimes were serious, harmful, and wrong. The sole purpose of this game is to mock and criticize through dark humor.</p>
-            <p>This game is intended for adults only. You must be 18+ to access. Minors are strictly prohibited.</p>
-            <p>All characters and events are fictionalized for satirical purposes. Any resemblance to real persons is coincidental.</p>
-            <p>Players access at their own risk. The creator is not responsible for any offense or emotional distress.</p>
-            <p>This content is protected parody and constitutes expressive speech.</p>
+            <p>Content for adult audiences only (18+).</p>
         </div>
     </div>
 
-    <div id="screen3" class="screen" onclick="goToGame()">
+    <div id="screen3" class="screen" onclick="initGame()">
         <div class="footer-text">CLICK TO ENTER THE GAME...</div>
+    </div>
+
+    <div id="screen4" class="screen">
+        <div class="top-bar">
+            🪙 <span id="coin-count">0</span>
+        </div>
+
+        <div class="menu-buttons">
+            <button class="btn" onclick="alert('Character Menu')">Character</button>
+            <button class="btn" onclick="alert('Starting Game...')">Play</button>
+        </div>
+    </div>
+
+    <div id="char-popup">
+        <h2 style="margin:0">NEW CHARACTER UNLOCKED!</h2>
+        <img id="unlocked-img" src="STARTER_CHAR.png" style="width:150px; height:150px; margin: 15px 0;">
+        <h3 id="unlocked-name">Character Name</h3>
+        <button class="btn" onclick="closePopup()">AWESOME</button>
     </div>
 
     <script>
         let currentScreen = 1;
+        let userData = {
+            coins: 100,
+            hasCharacter: false,
+            characterName: "The New Guy"
+        };
+
+        // Load data from local storage on startup
+        function loadData() {
+            const saved = localStorage.getItem('game_save');
+            if (saved) {
+                userData = JSON.parse(saved);
+                document.getElementById('coin-count').innerText = userData.coins;
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('game_save', JSON.stringify(userData));
+        }
 
         function nextScreen(num) {
             document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
@@ -125,11 +200,29 @@
             }
         }
 
-        function goToGame() {
-            window.location.href = 'game.html'; 
+        function initGame() {
+            nextScreen(4);
+            loadData();
+            
+            // If it's the first time getting a character
+            if (!userData.hasCharacter) {
+                userData.hasCharacter = true;
+                userData.characterName = "Default Hero"; // CHANGE NAME HERE
+                document.getElementById('unlocked-name').innerText = userData.characterName;
+                document.getElementById('char-popup').style.display = 'flex';
+                saveData();
+            }
         }
 
+        function closePopup() {
+            document.getElementById('char-popup').style.display = 'none';
+        }
+
+        // Auto-advance screen 1
         setTimeout(() => { if(currentScreen === 1) nextScreen(2); }, 1500);
+        
+        // Initialize data on load
+        loadData();
     </script>
 </body>
 </html>
